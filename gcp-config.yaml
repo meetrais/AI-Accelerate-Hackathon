@@ -1,0 +1,65 @@
+# Google Cloud Platform Configuration
+# This file contains the configuration values you'll need to set up
+
+project:
+  id: "flight-booking-assistant-2024"  # Replace with your project ID
+  name: "Flight Booking Assistant"
+  region: "us-central1"
+  zone: "us-central1-a"
+
+services:
+  cloud_run:
+    name: "flight-booking-assistant"
+    region: "us-central1"
+    memory: "2Gi"
+    cpu: "2"
+    min_instances: 1
+    max_instances: 10
+    concurrency: 80
+    timeout: 300
+
+  firestore:
+    mode: "NATIVE"
+    region: "us-central1"
+
+  vertex_ai:
+    region: "us-central1"
+    model: "gemini-pro"
+
+  secret_manager:
+    secrets:
+      - name: "service-account"
+        description: "Service account key for GCP services"
+      - name: "elastic-cloud-id"
+        description: "Elastic Cloud deployment ID"
+      - name: "elastic-api-key"
+        description: "Elastic Cloud API key"
+      - name: "stripe-secret"
+        description: "Stripe secret key"
+      - name: "stripe-publishable"
+        description: "Stripe publishable key"
+      - name: "sendgrid-api-key"
+        description: "SendGrid API key"
+      - name: "sendgrid-from-email"
+        description: "SendGrid from email address"
+
+external_services:
+  elastic_cloud:
+    url: "https://cloud.elastic.co/"
+    recommended_tier: "8GB RAM, 2 zones"
+    region: "us-central1"
+  
+  stripe:
+    url: "https://stripe.com/"
+    mode: "test"  # Change to "live" for production
+  
+  sendgrid:
+    url: "https://sendgrid.com/"
+    recommended_plan: "Essentials"
+
+estimated_costs:
+  cloud_run: "$20-50/month (depending on usage)"
+  firestore: "$5-20/month (depending on operations)"
+  vertex_ai: "$10-30/month (depending on API calls)"
+  elastic_cloud: "$45-95/month (depending on tier)"
+  total_estimated: "$80-195/month"

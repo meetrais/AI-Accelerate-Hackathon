@@ -1,0 +1,64 @@
+# Node modules
+node_modules/
+frontend/node_modules/
+
+# Build outputs
+frontend/build/
+dist/
+
+# Development files
+.git/
+.gitignore
+README.md
+docs/
+
+# Test files
+**/*.test.ts
+**/*.test.js
+**/__tests__/
+coverage/
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
