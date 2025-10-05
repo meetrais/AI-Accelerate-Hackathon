@@ -13,6 +13,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "seed-flights": "ts-node src/scripts/seedFlights.ts",
+    "init-genai": "ts-node src/scripts/initializeGenAI.ts",
     "deploy": "powershell -ExecutionPolicy Bypass -File scripts/deploy.ps1",
     "deploy:bash": "chmod +x scripts/deploy.sh && ./scripts/deploy.sh",
     "setup-secrets": "powershell -ExecutionPolicy Bypass -File scripts/setup-secrets-simple.ps1",

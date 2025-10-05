@@ -2,14 +2,32 @@
 
 A React-based frontend for the AI-Powered Flight Booking Assistant, featuring conversational AI interface powered by Vertex AI and Elasticsearch.
 
+## Two User Interfaces
+
+### 1. Flight Booking Interface (Default View)
+Complete booking experience with natural language search:
+- **Conversational Interface**: Natural language flight search using AI
+- **Real-time Chat**: Interactive chat interface with flight recommendations
+- **Flight Search**: Advanced search with filters and sorting
+- **Booking Management**: Complete booking flow from search to confirmation
+- **Responsive Design**: Mobile-first design with Tailwind CSS
+
+### 2. Gen AI Showcase Interface
+Click the "🤖 View Gen AI Showcase" button to explore all AI capabilities:
+- **🔍 Semantic Search**: Vector-based flight search with natural language understanding
+- **📊 Price Prediction**: ML-powered price forecasting with confidence scores
+- **📚 Document Q&A (RAG)**: Ask questions about policies, baggage rules, and documents
+- **✨ AI Recommendations**: Personalized flight suggestions based on preferences
+- **📋 System Overview**: Complete architecture, technologies, and API documentation
+
 ## Features
 
 - **Conversational Interface**: Natural language flight search using AI
 - **Real-time Chat**: Interactive chat interface with flight recommendations
 - **Flight Search**: Advanced search with filters and sorting
 - **Booking Management**: Complete booking flow from search to confirmation
+- **Gen AI Showcase**: Comprehensive demonstration of all AI capabilities
 - **Responsive Design**: Mobile-first design with Tailwind CSS
-- **TypeScript**: Full type safety throughout the application
 
 ## Tech Stack
 

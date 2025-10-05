@@ -7,6 +7,8 @@
 
 import { elasticsearchService } from '../services/elasticsearch';
 import { generateMockFlights } from '../data/mockFlights';
+import { vectorSearchService } from '../services/vectorSearchService';
+import { embeddingService } from '../services/embeddingService';
 
 async function seedFlights() {
   console.log('🚀 Starting flight data seeding process...');
@@ -20,6 +22,17 @@ async function seedFlights() {
       throw new Error('Elasticsearch is not available. Please check your connection settings.');
     }
     console.log('✅ Elasticsearch connection successful');
+
+    // Initialize Gen AI services
+    console.log('🤖 Initializing Gen AI services...');
+    try {
+      await embeddingService.initialize();
+      await vectorSearchService.ensureIndexMapping();
+      console.log('✅ Gen AI services initialized');
+    } catch (error) {
+      console.log('⚠️  Gen AI initialization failed - continuing without embeddings');
+      console.log('   Error:', error.message);
+    }
 
     // Create flight index
     console.log('📋 Creating flight index...');
@@ -39,9 +52,33 @@ async function seedFlights() {
       console.log('ℹ️ No existing data to clear');
     }
 
-    // Index the flights
-    console.log('📥 Indexing flights in Elasticsearch...');
-    await elasticsearchService.indexFlights(flights);
+    // Index the flights with embeddings
+    console.log('📥 Indexing flights with embeddings in Elasticsearch...');
+    console.log('   This may take a few minutes for large datasets...');
+    
+    try {
+      // Convert Flight[] to FlightResult[] for vector indexing
+      const flightResults = flights.map(flight => ({
+        id: flight.id,
+        airline: flight.airline,
+        flightNumber: flight.flightNumber,
+        origin: flight.origin,
+        destination: flight.destination,
+        departureTime: flight.departureTime,
+        arrivalTime: flight.arrivalTime,
+        duration: flight.duration,
+        stops: flight.stops.length, // Convert Airport[] to number
+        price: typeof flight.price === 'number' ? flight.price : flight.price.amount,
+        availableSeats: flight.availableSeats || flight.availability?.economy || 0
+      }));
+
+      await vectorSearchService.batchIndexFlights(flightResults);
+      console.log('✅ Flights indexed with embeddings');
+    } catch (error) {
+      console.log('⚠️  Embedding generation failed - falling back to standard indexing');
+      console.log('   Error:', error.message);
+      await elasticsearchService.indexFlights(flights);
+    }
 
     // Verify the data was indexed
     console.log('🔍 Verifying indexed data...');

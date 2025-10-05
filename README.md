@@ -4,18 +4,43 @@ A conversational flight booking platform that combines Elastic's search capabili
 
 ## 🚀 Features
 
+### Two User Interfaces
+
+#### 1. Flight Booking Interface (Default)
+Complete booking experience with natural language search:
 - **Natural Language Search**: Describe your travel needs in plain English
 - **Intelligent Recommendations**: AI-powered flight suggestions based on preferences
 - **Conversational Booking**: Complete your purchase through chat interface
 - **Real-time Search**: Powered by Elasticsearch for fast, relevant results
 - **Secure Payments**: Stripe integration for safe transactions
 
+#### 2. Gen AI Showcase Interface
+Click "🤖 View Gen AI Showcase" to explore all AI capabilities:
+- **🔍 Semantic Search**: Vector-based flight search with relevance scores
+- **📊 Price Prediction**: ML-powered price forecasting with confidence levels
+- **📚 Document Q&A (RAG)**: Ask questions about policies and documents
+- **✨ AI Recommendations**: Personalized suggestions based on behavior
+- **📋 System Overview**: Complete architecture and API documentation
+
+### 🤖 Advanced Gen AI Features
+- **Semantic Search**: Vector-based flight search using embeddings
+- **RAG (Retrieval Augmented Generation)**: Context-aware AI responses grounded in real data
+- **Price Prediction**: AI-powered price trend forecasting
+- **Delay Prediction**: Predict flight delays before they happen
+- **Multimodal AI**: Extract info from passports, boarding passes, and IDs
+- **Personalization Engine**: Learn user preferences and provide tailored recommendations
+- **Proactive Assistance**: Automatic rebooking, travel tips, and disruption management
+- **Smart Document Processing**: Verify identity, validate passports, process boarding passes
+
 ## 🛠 Technology Stack
 
 - **Backend**: Node.js with TypeScript and Express.js
-- **AI**: Google Cloud Vertex AI (Gemini for conversations)
-- **Search**: Elasticsearch for flight data indexing and search
-- **Database**: Google Cloud Firestore for bookings and sessions
+- **AI & ML**: 
+  - Google Cloud Vertex AI (Gemini Pro for conversations)
+  - Vertex AI Embeddings (text-embedding-004)
+  - Gemini Vision for multimodal processing
+- **Search**: Elasticsearch 8.x with vector search (kNN)
+- **Database**: Google Cloud Firestore for bookings, sessions, and user profiles
 - **Payments**: Stripe for secure payment processing
 - **Infrastructure**: Google Cloud Run for deployment
 
@@ -39,12 +64,18 @@ A conversational flight booking platform that combines Elastic's search capabili
    # Edit .env with your configuration values
    ```
 
-3. **Seed flight data** (requires Elasticsearch):
+3. **Initialize Gen AI services**:
+   ```bash
+   npm run init-genai
+   ```
+
+4. **Seed flight data** (requires Elasticsearch):
    ```bash
    npm run seed-flights
    ```
+   This will index flights with embeddings for semantic search.
 
-4. **Development server**:
+5. **Development server**:
    ```bash
    npm run dev
    ```
@@ -85,6 +116,36 @@ npm run test:watch
 - `GET /api/chat/conversation-history/:sessionId` - Get conversation history
 - `POST /api/chat/context-search` - Search with conversational context
 
+### 🤖 Gen AI Features
+#### Semantic Search & RAG
+- `POST /api/genai/semantic-search` - Vector-based semantic flight search
+- `POST /api/genai/rag-query` - Ask questions using RAG
+- `POST /api/genai/explain-policy` - Explain airline policies in natural language
+- `POST /api/genai/generate-itinerary` - Generate AI-powered travel itinerary
+
+#### Predictive Analytics
+- `POST /api/genai/predict-price` - Predict price trends
+- `POST /api/genai/predict-delay` - Predict flight delays
+- `POST /api/genai/forecast-demand` - Forecast route demand
+- `POST /api/genai/optimal-booking-time` - Find optimal booking time
+
+#### Multimodal AI
+- `POST /api/genai/extract-document` - Extract info from travel documents
+- `POST /api/genai/validate-passport` - Validate passport information
+- `POST /api/genai/verify-identity` - Verify identity with document + selfie
+
+#### Personalization
+- `GET /api/genai/user-profile/:userId` - Get user profile
+- `POST /api/genai/personalized-recommendations` - Get personalized recommendations
+- `POST /api/genai/predict-preferences` - Predict user preferences
+- `GET /api/genai/search-suggestions/:userId` - Get personalized search suggestions
+
+#### Proactive Assistance
+- `POST /api/genai/monitor-flight` - Start flight monitoring
+- `POST /api/genai/suggest-rebooking` - Get rebooking suggestions
+- `POST /api/genai/travel-tips` - Get personalized travel tips
+- `POST /api/genai/check-in-assist` - Get check-in assistance
+
 ### Natural Language Processing
 - `POST /api/nlp/query` - Process natural language travel queries
 - `POST /api/nlp/chat` - Handle conversational interactions
@@ -112,6 +173,9 @@ npm run test:watch
 - `GET /api/payment/stats` - Get payment statistics
 - `GET /api/payment/health` - Check payment service health
 
+### Documentation
+See [GEN_AI_FEATURES.md](./GEN_AI_FEATURES.md) for comprehensive Gen AI documentation.
+
 ## 🏗 Development Progress
 
 This project is being built incrementally following a spec-driven approach:
@@ -127,6 +191,18 @@ This project is being built incrementally following a spec-driven approach:
 - ⏳ **Task 9**: Booking management
 - ⏳ **Task 10**: Error handling and testing
 - ⏳ **Task 11**: GCP deployment
+
+## 📖 Documentation
+
+### Gen AI Showcase
+- **[QUICK_START_SHOWCASE.md](./QUICK_START_SHOWCASE.md)** - Quick start guide for the Gen AI Showcase
+- **[GENAI_SHOWCASE_COMPLETE.md](./GENAI_SHOWCASE_COMPLETE.md)** - Complete implementation details
+- **[SHOWCASE_VS_BOOKING.md](./SHOWCASE_VS_BOOKING.md)** - Comparison between interfaces
+
+### General Documentation
+- **[GEN_AI_FEATURES.md](./GEN_AI_FEATURES.md)** - Comprehensive Gen AI documentation
+- **[TESTING_GUIDE.md](./TESTING_GUIDE.md)** - Testing instructions
+- **[DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)** - Deployment guide
 
 ## 📄 License
 

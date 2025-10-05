@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import http from 'http';
 import { config } from './config';
 import { ApiResponse, HealthCheckResponse } from './types';
 // Services are imported by routes as needed
@@ -15,10 +16,22 @@ const app = express();
 app.use(helmet());
 app.use(cors(config.cors));
 app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Increase header size limit
+app.use((req, res, next) => {
+  req.setTimeout(30000); // 30 seconds timeout
+  next();
+});
 
 // Request logging and monitoring
 app.use(monitoringService.createRequestLogger());
+
+// Simple health check endpoint
+app.get('/ping', (req: express.Request, res: express.Response) => {
+  console.log('Ping request received from:', req.get('origin') || req.get('referer') || 'unknown');
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
 // Health check endpoint
 app.get('/health', asyncHandler(async (req: express.Request, res: express.Response) => {
@@ -55,6 +68,7 @@ import bookingRoutes from './routes/booking';
 import paymentRoutes from './routes/payment';
 import travelUpdateRoutes from './routes/travelUpdates';
 import monitoringRoutes from './routes/monitoring';
+import genaiRoutes from './routes/genai';
 
 // API routes
 app.use('/api/search', searchRoutes);
@@ -64,6 +78,7 @@ app.use('/api/booking', bookingRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/travel-updates', travelUpdateRoutes);
 app.use('/api/monitoring', monitoringRoutes);
+app.use('/api/genai', genaiRoutes);
 
 // Catch-all for unimplemented API routes
 app.use('/api/*', (req: express.Request, res: express.Response) => {
@@ -98,7 +113,12 @@ app.use('*', (req: express.Request, res: express.Response) => {
   res.status(404).json(response);
 });
 
-const server = app.listen(config.port, () => {
+// Create server with increased header size limit
+const server = http.createServer({
+  maxHeaderSize: 32768 // 32KB instead of default 8KB
+}, app);
+
+server.listen(config.port, () => {
   console.log(`🚀 Flight Booking Assistant API running on port ${config.port}`);
   console.log(`📊 Environment: ${config.nodeEnv}`);
   console.log(`🔗 Health check: http://localhost:${config.port}/health`);

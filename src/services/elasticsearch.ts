@@ -6,6 +6,13 @@ export class ElasticsearchService {
   private client: Client;
   private flightIndex: string;
 
+  /**
+   * Get the Elasticsearch client (for advanced operations)
+   */
+  public getClient(): Client {
+    return this.client;
+  }
+
   constructor() {
     // Initialize Elasticsearch client
     const clientConfig: any = {
