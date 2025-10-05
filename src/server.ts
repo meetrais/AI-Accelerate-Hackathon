@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import http from 'http';
+import path from 'path';
 import { config } from './config';
 import { ApiResponse, HealthCheckResponse } from './types';
 // Services are imported by routes as needed
@@ -13,7 +14,10 @@ import { errorHandler, notFoundHandler, asyncHandler } from './middleware/errorH
 const app = express();
 
 // Middleware
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false, // Disable for React app
+  crossOriginEmbedderPolicy: false
+}));
 app.use(cors(config.cors));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -89,6 +93,28 @@ app.use('/api/*', (req: express.Request, res: express.Response) => {
   });
 });
 
+// Serve static frontend files in production
+if (config.nodeEnv === 'production') {
+  const frontendPath = path.join(__dirname, '../frontend/build');
+  app.use(express.static(frontendPath));
+  
+  // Serve index.html for all non-API routes (SPA support)
+  app.get('*', (req: express.Request, res: express.Response) => {
+    res.sendFile(path.join(frontendPath, 'index.html'));
+  });
+} else {
+  // 404 handler for development (frontend runs separately)
+  app.use('*', (req: express.Request, res: express.Response) => {
+    const response: ApiResponse = {
+      success: false,
+      error: 'Not found',
+      message: `Route ${req.originalUrl} not found. In development, frontend runs on port 3001.`
+    };
+
+    res.status(404).json(response);
+  });
+}
+
 // Error handling middleware
 app.use((error: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error('Unhandled error:', error);
@@ -100,17 +126,6 @@ app.use((error: Error, _req: express.Request, res: express.Response, _next: expr
   };
 
   res.status(500).json(response);
-});
-
-// 404 handler
-app.use('*', (req: express.Request, res: express.Response) => {
-  const response: ApiResponse = {
-    success: false,
-    error: 'Not found',
-    message: `Route ${req.originalUrl} not found`
-  };
-
-  res.status(404).json(response);
 });
 
 // Create server with increased header size limit

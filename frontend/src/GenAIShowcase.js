@@ -12,7 +12,7 @@ function GenAIShowcase() {
   const handleSemanticSearch = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3000/api/genai/semantic-search', {
+      const response = await fetch('/api/genai/semantic-search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: semanticQuery, topK: 5, minScore: 0.5 })
@@ -28,7 +28,7 @@ function GenAIShowcase() {
   const handlePricePrediction = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3000/api/genai/predict-price', {
+      const response = await fetch('/api/genai/predict-price', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -49,7 +49,7 @@ function GenAIShowcase() {
   const handleRAGQuery = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3000/api/genai/rag-query', {
+      const response = await fetch('/api/genai/rag-query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: ragQuestion })

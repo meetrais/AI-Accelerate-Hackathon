@@ -47,7 +47,7 @@ function App() {
     setLoading(true);
     try {
       // Send natural language query to backend
-      const response = await fetch('http://localhost:3000/api/chat/message', {
+      const response = await fetch('/api/chat/message', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -160,7 +160,7 @@ function App() {
         }
       };
 
-      const response = await fetch('http://localhost:3000/api/booking/create', {
+      const response = await fetch('/api/booking/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -202,13 +202,13 @@ function App() {
 
   const testBackend = async () => {
     try {
-      const pingResponse = await fetch('http://localhost:3000/ping');
+      const pingResponse = await fetch('/ping');
       
       if (pingResponse.ok) {
         const pingData = await pingResponse.json();
         
         try {
-          const healthResponse = await fetch('http://localhost:3000/health');
+          const healthResponse = await fetch('/health');
           if (healthResponse.ok) {
             const healthData = await healthResponse.json();
             const services = Object.keys(healthData.data?.services || {});

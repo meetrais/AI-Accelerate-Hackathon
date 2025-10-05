@@ -1,51 +1,61 @@
-# Google Cloud Build configuration
 steps:
   # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
-    args: [
-      'build',
-      '-t', 'gcr.io/$PROJECT_ID/flight-booking-assistant:$COMMIT_SHA',
-      '-t', 'gcr.io/$PROJECT_ID/flight-booking-assistant:latest',
-      '.'
-    ]
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/flight-booking-assistant:$COMMIT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/flight-booking-assistant:latest'
+      - '.'
+    timeout: 1200s
 
   # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/flight-booking-assistant:$COMMIT_SHA']
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/flight-booking-assistant:$COMMIT_SHA'
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/flight-booking-assistant:latest']
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/flight-booking-assistant:latest'
 
-  # Deploy to Cloud Run
+  # Deploy container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
-    args: [
-      'run', 'deploy', 'flight-booking-assistant',
-      '--image', 'gcr.io/$PROJECT_ID/flight-booking-assistant:$COMMIT_SHA',
-      '--region', 'us-central1',
-      '--platform', 'managed',
-      '--allow-unauthenticated',
-      '--port', '8080',
-      '--memory', '2Gi',
-      '--cpu', '2',
-      '--max-instances', '10',
-      '--min-instances', '1',
-      '--concurrency', '80',
-      '--timeout', '300',
-      '--set-env-vars', 'NODE_ENV=production,PORT=8080',
-      '--set-secrets', 'GOOGLE_APPLICATION_CREDENTIALS=/secrets/service-account:latest,ELASTIC_CLOUD_ID=/secrets/elastic-cloud-id:latest,ELASTIC_API_KEY=/secrets/elastic-api-key:latest,STRIPE_SECRET_KEY=/secrets/stripe-secret:latest,SENDGRID_API_KEY=/secrets/sendgrid-api-key:latest'
-    ]
+    args:
+      - 'run'
+      - 'deploy'
+      - 'flight-booking-assistant'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/flight-booking-assistant:$COMMIT_SHA'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--port'
+      - '8080'
+      - '--memory'
+      - '2Gi'
+      - '--cpu'
+      - '2'
+      - '--min-instances'
+      - '0'
+      - '--max-instances'
+      - '10'
+      - '--timeout'
+      - '300'
+      - '--set-env-vars'
+      - 'NODE_ENV=production,PORT=8080'
 
-# Store images in Container Registry
 images:
   - 'gcr.io/$PROJECT_ID/flight-booking-assistant:$COMMIT_SHA'
   - 'gcr.io/$PROJECT_ID/flight-booking-assistant:latest'
 
-# Build options
+timeout: 1800s
+
 options:
   machineType: 'E2_HIGHCPU_8'
-  diskSizeGb: 100
   logging: CLOUD_LOGGING_ONLY
-
-# Timeout for the entire build
-timeout: '1200s'

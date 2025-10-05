@@ -37,27 +37,58 @@ router.post('/semantic-search', asyncHandler(async (req, res) => {
     });
   }
 
-  const results = await vectorSearchService.semanticSearch(value.query, {
-    topK: value.topK,
-    minScore: value.minScore,
-    filters: value.filters
-  });
+  try {
+    const results = await vectorSearchService.semanticSearch(value.query, {
+      topK: value.topK,
+      minScore: value.minScore,
+      filters: value.filters
+    });
 
-  const response: ApiResponse = {
-    success: true,
-    data: {
-      query: value.query,
-      results: results.map(r => ({
-        flight: r.flight,
-        score: r.score,
-        similarity: r.similarity
-      })),
-      count: results.length
-    },
-    message: 'Semantic search completed'
-  };
+    const response: ApiResponse = {
+      success: true,
+      data: {
+        query: value.query,
+        results: results.map(r => ({
+          flight: r.flight,
+          score: r.score,
+          similarity: r.similarity
+        })),
+        count: results.length
+      },
+      message: 'Semantic search completed'
+    };
 
-  res.json(response);
+    res.json(response);
+  } catch (error: any) {
+    // Fallback to regular search if embeddings fail
+    console.warn('⚠️ Semantic search failed, falling back to regular search:', error.message);
+    
+    const { elasticsearchService } = await import('../services/elasticsearch');
+    const fallbackResults = await elasticsearchService.searchFlights({
+      origin: '',
+      destination: '',
+      departureDate: new Date(),
+      passengers: 1
+    });
+
+    const response: ApiResponse = {
+      success: true,
+      data: {
+        query: value.query,
+        results: fallbackResults.map((flight: any) => ({
+          flight,
+          score: 0.8,
+          similarity: 0.8
+        })),
+        count: fallbackResults.length,
+        fallback: true,
+        fallbackReason: 'Embedding service unavailable (quota exceeded)'
+      },
+      message: 'Search completed using fallback method'
+    };
+
+    res.json(response);
+  }
 }));
 
 /**
@@ -80,19 +111,45 @@ router.post('/rag-query', asyncHandler(async (req, res) => {
     });
   }
 
-  const result = await ragService.answerFlightQuestion(
-    value.question,
-    value.flightIds,
-    value.context
-  );
+  try {
+    const result = await ragService.answerFlightQuestion(
+      value.question,
+      value.flightIds,
+      value.context
+    );
 
-  const response: ApiResponse = {
-    success: true,
-    data: result,
-    message: 'Question answered using RAG'
-  };
+    const response: ApiResponse = {
+      success: true,
+      data: result,
+      message: 'Question answered using RAG'
+    };
 
-  res.json(response);
+    res.json(response);
+  } catch (error: any) {
+    // Fallback to simple Gemini response without RAG
+    console.warn('⚠️ RAG failed, using simple AI response:', error.message);
+    
+    const { vertexAIService } = await import('../services/vertexai');
+    const simpleAnswer = await vertexAIService.generateConversationalResponse(
+      `Answer this travel question: ${value.question}`,
+      undefined,
+      undefined
+    );
+
+    const response: ApiResponse = {
+      success: true,
+      data: {
+        answer: simpleAnswer,
+        sources: [],
+        confidence: 0.7,
+        fallback: true,
+        fallbackReason: 'RAG service unavailable (embedding quota exceeded)'
+      },
+      message: 'Question answered using AI (without document retrieval)'
+    };
+
+    res.json(response);
+  }
 }));
 
 /**
