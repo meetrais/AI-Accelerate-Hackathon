@@ -1,90 +1,329 @@
 # AI-Powered Flight Booking Assistant
 
-A conversational flight booking platform that combines Elastic's search capabilities with Google Cloud's Vertex AI to provide intelligent, natural language flight search and booking.
+A production-ready, Gen AI-powered flight booking platform that combines Google Cloud's Vertex AI, Elasticsearch, and Firestore to provide intelligent, conversational flight search and booking with Google's Agent Payment Protocol (AP2).
 
-## 🚀 Features
+## 🎯 Overview
 
-### Two User Interfaces
+This application showcases enterprise-grade Gen AI capabilities for travel booking, featuring natural language understanding, semantic search, price predictions, and secure AI agent payments using Google's official AP2 protocol.
 
-#### 1. Flight Booking Interface (Default)
-Complete booking experience with natural language search:
-- **Natural Language Search**: Describe your travel needs in plain English
-- **Intelligent Recommendations**: AI-powered flight suggestions based on preferences
-- **Conversational Booking**: Complete your purchase through chat interface
-- **Real-time Search**: Powered by Elasticsearch for fast, relevant results
-- **Secure Payments**: Stripe integration for safe transactions
+## ✨ Key Features
 
-#### 2. Gen AI Showcase Interface
-Click "🤖 View Gen AI Showcase" to explore all AI capabilities:
-- **🔍 Semantic Search**: Vector-based flight search with relevance scores
-- **📊 Price Prediction**: ML-powered price forecasting with confidence levels
-- **📚 Document Q&A (RAG)**: Ask questions about policies and documents
-- **✨ AI Recommendations**: Personalized suggestions based on behavior
-- **📋 System Overview**: Complete architecture and API documentation
+### 🤖 Gen AI Capabilities
+- **Smart Search** - Natural language flight search with semantic understanding
+- **Price Forecast** - ML-based price predictions with confidence scores
+- **Ask Questions** - RAG-powered Q&A about travel policies and procedures
+- **AI Recommendations** - Personalized flight suggestions based on preferences
+- **Conversational Booking** - Complete booking flow through natural language chat
 
-### 🤖 Advanced Gen AI Features
-- **Semantic Search**: Vector-based flight search using embeddings
-- **RAG (Retrieval Augmented Generation)**: Context-aware AI responses grounded in real data
-- **Price Prediction**: AI-powered price trend forecasting
-- **Delay Prediction**: Predict flight delays before they happen
-- **Multimodal AI**: Extract info from passports, boarding passes, and IDs
-- **Personalization Engine**: Learn user preferences and provide tailored recommendations
-- **Proactive Assistance**: Automatic rebooking, travel tips, and disruption management
-- **Smart Document Processing**: Verify identity, validate passports, process boarding passes
+### 💳 Google AP2 Payment Protocol
+- **Cryptographically Signed Mandates** - RSA-256 signatures for proof of user intent
+- **Payment-Agnostic** - Support for cards, bank transfers, wallets, and cryptocurrency
+- **A2A Integration** - Agent-to-Agent protocol compatibility
+- **MCP Extension** - Model Context Protocol support
+- **Complete Audit Trails** - Every transaction cryptographically signed
 
-## 🛠 Technology Stack
+### 🔍 Advanced Search
+- **Semantic Search** - Vector-based search using Vertex AI embeddings
+- **Hybrid Search** - Combines semantic and traditional search
+- **Real-time Results** - Fast queries powered by Elasticsearch
 
-- **Backend**: Node.js with TypeScript and Express.js
-- **AI & ML**: 
-  - Google Cloud Vertex AI (Gemini Pro for conversations)
-  - Vertex AI Embeddings (text-embedding-004)
-  - Gemini Vision for multimodal processing
-- **Search**: Elasticsearch 8.x with vector search (kNN)
-- **Database**: Google Cloud Firestore for bookings, sessions, and user profiles
-- **Payments**: Stripe for secure payment processing
-- **Infrastructure**: Google Cloud Run for deployment
+### 🎨 User Interface
+- **Smart Travel Assistant** - Modern, dark-themed Gen AI showcase
+- **Flight Booking Flow** - Complete booking interface with step-by-step process
+- **Responsive Design** - Works on desktop and mobile devices
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Frontend (React)                          │
+│              Smart Assistant + Booking Flow                  │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                Backend (Node.js + TypeScript)                │
+│         Express API + Gen AI Services + AP2                  │
+└─────────────────────────────────────────────────────────────┘
+                              │
+        ┌─────────────────────┼─────────────────────┐
+        ▼                     ▼                     ▼
+┌──────────────┐      ┌──────────────┐     ┌──────────────┐
+│  Vertex AI   │      │Elasticsearch │     │  Firestore   │
+│              │      │              │     │              │
+│ • Gemini     │      │ • Flights    │     │ • Bookings   │
+│ • Embeddings │      │ • Vectors    │     │ • Sessions   │
+│ • Vision     │      │ • Search     │     │ • Mandates   │
+└──────────────┘      └──────────────┘     └──────────────┘
+```
+
+## 🛠️ Technology Stack
+
+### Backend
+- **Runtime:** Node.js 18+ with TypeScript
+- **Framework:** Express.js
+- **AI/ML:** Google Cloud Vertex AI (Gemini 1.5 Flash, text-embedding-004)
+- **Search:** Elasticsearch 8.x with vector search (kNN)
+- **Database:** Google Cloud Firestore
+- **Payments:** Stripe + Google AP2 Protocol
+- **Infrastructure:** Google Cloud Run
+
+### Frontend
+- **Framework:** React 18
+- **Language:** JavaScript
+- **Styling:** Inline styles with modern design
+- **Build:** Create React App
+
+### Key Services
+- **Vertex AI** - Natural language understanding, embeddings, chat
+- **Elasticsearch** - Flight search, vector similarity, semantic matching
+- **Firestore** - Bookings, sessions, user profiles, AP2 mandates
+- **Cloud Run** - Serverless deployment with auto-scaling
 
 ## 📋 Prerequisites
 
 - Node.js 18+ and npm
-- Google Cloud Project with Vertex AI API enabled
+- Google Cloud Project with billing enabled
 - Elasticsearch cluster (Elastic Cloud recommended)
-- Stripe account for payments
+- Stripe account (optional, has mock mode)
+- gcloud CLI installed
 
-## 🔧 Setup
+## 🚀 Quick Start
 
-1. **Clone and install dependencies**:
-   ```bash
-   npm install
-   ```
+### 1. Clone and Install
 
-2. **Environment configuration**:
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration values
-   ```
+```bash
+git clone <repository-url>
+cd AI-Accelerate-Hackathon
+npm install
+cd frontend && npm install && cd ..
+```
 
-3. **Initialize Gen AI services**:
-   ```bash
-   npm run init-genai
-   ```
+### 2. Configure Environment
 
-4. **Seed flight data** (requires Elasticsearch):
-   ```bash
-   npm run seed-flights
-   ```
-   This will index flights with embeddings for semantic search.
+Create `.env` file:
 
-5. **Development server**:
-   ```bash
-   npm run dev
-   ```
+```env
+# Google Cloud
+GOOGLE_CLOUD_PROJECT_ID=your-project-id
+GOOGLE_CLOUD_LOCATION=us-central1
 
-5. **Build for production**:
-   ```bash
-   npm run build
-   npm start
-   ```
+# Elasticsearch
+ELASTICSEARCH_NODE=https://your-cluster.es.cloud:443
+ELASTICSEARCH_API_KEY=your-api-key
+ELASTICSEARCH_FLIGHT_INDEX=flights
+
+# Stripe (optional - has mock mode)
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_PUBLISHABLE_KEY=pk_test_...
+
+# Development
+NODE_ENV=development
+PORT=3000
+```
+
+### 3. Run Locally
+
+```bash
+# Terminal 1: Backend
+npm run dev
+
+# Terminal 2: Frontend
+cd frontend
+npm start
+```
+
+Access the app at http://localhost:3001
+
+### 4. Deploy to Google Cloud Run
+
+```bash
+# Build
+npm run build
+
+# Deploy (Windows)
+.\deploy-gcp.ps1
+
+# Deploy (Mac/Linux)
+chmod +x deploy-gcp.sh
+./deploy-gcp.sh
+```
+
+## 📚 API Documentation
+
+### Gen AI Endpoints
+
+#### Semantic Search
+```bash
+POST /api/genai/semantic-search
+{
+  "query": "flights to paris",
+  "topK": 5,
+  "minScore": 0.5
+}
+```
+
+#### Price Prediction
+```bash
+POST /api/genai/predict-price
+{
+  "origin": "JFK",
+  "destination": "LAX",
+  "departureDate": "2025-10-15",
+  "currentPrice": 450
+}
+```
+
+#### Document Q&A (RAG)
+```bash
+POST /api/genai/rag-query
+{
+  "question": "What is the baggage allowance?"
+}
+```
+
+### Google AP2 Protocol Endpoints
+
+#### Create Mandate
+```bash
+POST /api/ap2/mandate/create
+{
+  "userId": "user_123",
+  "agentId": "flight_agent",
+  "authorization": {
+    "maxAmount": 1000,
+    "currency": "USD",
+    "scope": ["flight-booking"],
+    "validFrom": "2025-10-06T00:00:00Z",
+    "validUntil": "2025-10-07T00:00:00Z"
+  },
+  "paymentMethods": [{
+    "methodId": "pm_123",
+    "type": "card",
+    "provider": "stripe",
+    "priority": 1
+  }],
+  "userConsent": {
+    "consentId": "consent_123",
+    "timestamp": "2025-10-06T00:00:00Z"
+  }
+}
+```
+
+#### Process Payment
+```bash
+POST /api/ap2/payment
+{
+  "mandateId": "mandate_...",
+  "agentId": "flight_agent",
+  "amount": 650,
+  "currency": "USD",
+  "description": "Flight booking",
+  "scope": "flight-booking"
+}
+```
+
+### Chat & Booking Endpoints
+
+```bash
+POST /api/chat/message        # Natural language chat
+POST /api/booking/create      # Create booking
+GET  /api/booking/:id         # Get booking details
+POST /api/payment/process     # Process payment
+GET  /health                  # Health check
+```
+
+## 🗄️ Database Schema
+
+### Firestore Collections
+
+#### bookings
+```typescript
+{
+  bookingReference: string;
+  userId: string;
+  flights: Flight[];
+  passengers: PassengerInfo[];
+  totalAmount: number;
+  status: 'pending' | 'confirmed' | 'cancelled';
+  createdAt: Date;
+}
+```
+
+#### sessions
+```typescript
+{
+  sessionId: string;
+  userId?: string;
+  messages: Message[];
+  context: ConversationContext;
+  createdAt: Date;
+  lastActivity: Date;
+}
+```
+
+#### ap2_mandates
+```typescript
+{
+  mandateId: string;
+  userId: string;
+  agentId: string;
+  authorization: Authorization;
+  signature: {
+    algorithm: 'RS256';
+    publicKey: string;
+    signedData: string;
+  };
+  status: 'active' | 'revoked' | 'expired';
+}
+```
+
+#### ap2_transactions
+```typescript
+{
+  transactionId: string;
+  mandateId: string;
+  amount: number;
+  status: 'completed' | 'failed' | 'refunded';
+  verification: VerificationResult;
+  auditTrail: AuditEntry[];
+}
+```
+
+### Elasticsearch Indices
+
+#### flights
+```json
+{
+  "id": "FL001",
+  "airline": "American Airlines",
+  "flightNumber": "AA100",
+  "origin": { "code": "JFK", "city": "New York" },
+  "destination": { "code": "LAX", "city": "Los Angeles" },
+  "departureTime": "2025-10-15T10:00:00Z",
+  "price": 450,
+  "availableSeats": 45,
+  "embedding": [0.123, 0.456, ...] // 768-dim vector
+}
+```
+
+## 🔐 Security Features
+
+### AP2 Protocol Security
+- ✅ RSA-256 cryptographic signatures
+- ✅ Proof of user intent via signed Mandates
+- ✅ Amount limits and expiration
+- ✅ Scope-based authorization
+- ✅ Complete audit trails
+- ✅ Revocable permissions
+
+### Application Security
+- ✅ Helmet.js security headers
+- ✅ CORS configuration
+- ✅ Input validation (Joi)
+- ✅ Error handling middleware
+- ✅ Rate limiting
+- ✅ Environment variable protection
 
 ## 🧪 Testing
 
@@ -92,122 +331,152 @@ Click "🤖 View Gen AI Showcase" to explore all AI capabilities:
 # Run tests
 npm test
 
-# Run tests in watch mode
-npm run test:watch
+# Test with coverage
+npm run test:coverage
+
+# Test backend health
+curl http://localhost:3000/health
+
+# Test semantic search
+curl -X POST http://localhost:3000/api/genai/semantic-search \
+  -H "Content-Type: application/json" \
+  -d '{"query": "flights to paris", "topK": 5}'
 ```
 
-## 📚 API Endpoints
+## 📊 Monitoring & Observability
 
-### Search & Discovery
-- `GET /health` - Health check endpoint
-- `POST /api/search/flights` - Hybrid flight search with intelligent ranking
-- `POST /api/search/flexible` - Flexible date flight search
-- `GET /api/search/route-stats/:origin/:destination` - Route statistics
-- `POST /api/search/recommendations` - Personalized flight recommendations
-- `POST /api/search/compare` - Compare multiple flights
-- `GET /api/search/airports?q=query` - Get airport suggestions
-- `GET /api/search/flights/:flightId` - Get flight details by ID
+### Health Checks
+- `/health` - Complete system health
+- `/ping` - Simple connectivity check
 
-### Conversational Interface
-- `POST /api/chat/message` - Send message to conversational assistant
-- `POST /api/chat/quick-search` - Quick conversational flight search
-- `POST /api/chat/get-recommendations` - Get personalized recommendations with explanation
-- `POST /api/chat/explain-flight` - Get conversational flight explanation
-- `GET /api/chat/conversation-history/:sessionId` - Get conversation history
-- `POST /api/chat/context-search` - Search with conversational context
+### Logging
+- Structured logging with timestamps
+- Request/response logging
+- Error tracking
+- Performance metrics
 
-### 🤖 Gen AI Features
-#### Semantic Search & RAG
-- `POST /api/genai/semantic-search` - Vector-based semantic flight search
-- `POST /api/genai/rag-query` - Ask questions using RAG
-- `POST /api/genai/explain-policy` - Explain airline policies in natural language
-- `POST /api/genai/generate-itinerary` - Generate AI-powered travel itinerary
+### Cloud Run Metrics
+- Request count
+- Response times
+- Error rates
+- Memory/CPU usage
 
-#### Predictive Analytics
-- `POST /api/genai/predict-price` - Predict price trends
-- `POST /api/genai/predict-delay` - Predict flight delays
-- `POST /api/genai/forecast-demand` - Forecast route demand
-- `POST /api/genai/optimal-booking-time` - Find optimal booking time
+## 🚢 Deployment
 
-#### Multimodal AI
-- `POST /api/genai/extract-document` - Extract info from travel documents
-- `POST /api/genai/validate-passport` - Validate passport information
-- `POST /api/genai/verify-identity` - Verify identity with document + selfie
+### Google Cloud Run
 
-#### Personalization
-- `GET /api/genai/user-profile/:userId` - Get user profile
-- `POST /api/genai/personalized-recommendations` - Get personalized recommendations
-- `POST /api/genai/predict-preferences` - Predict user preferences
-- `GET /api/genai/search-suggestions/:userId` - Get personalized search suggestions
+The application is deployed on Google Cloud Run with:
+- **Auto-scaling:** 0-10 instances
+- **Memory:** 2GB per instance
+- **CPU:** 2 cores
+- **Timeout:** 300 seconds
+- **Region:** us-central1
 
-#### Proactive Assistance
-- `POST /api/genai/monitor-flight` - Start flight monitoring
-- `POST /api/genai/suggest-rebooking` - Get rebooking suggestions
-- `POST /api/genai/travel-tips` - Get personalized travel tips
-- `POST /api/genai/check-in-assist` - Get check-in assistance
+### Environment Variables (Production)
 
-### Natural Language Processing
-- `POST /api/nlp/query` - Process natural language travel queries
-- `POST /api/nlp/chat` - Handle conversational interactions
-- `GET /api/nlp/session/:sessionId` - Get session information
-- `DELETE /api/nlp/session/:sessionId` - Clear session data
-- `GET /api/nlp/stats` - Get NLP service statistics
+Set in Cloud Run console or via gcloud:
 
-### Booking Management
-- `POST /api/booking/create` - Create a new flight booking with payment
-- `POST /api/booking/validate` - Validate booking request
-- `GET /api/booking/:bookingReference` - Get booking by reference
-- `GET /api/booking/user/:userId` - Get user bookings
-- `PUT /api/booking/:bookingId/cancel` - Cancel booking with refund
-- `PUT /api/booking/:bookingId/modify` - Modify booking
-- `GET /api/booking/session/:sessionId/steps` - Get booking steps
-- `POST /api/booking/session/:sessionId/step` - Update booking step
-- `GET /api/booking/stats` - Get booking statistics
+```bash
+gcloud run services update flight-booking-assistant \
+  --region us-central1 \
+  --update-env-vars \
+  GOOGLE_CLOUD_PROJECT_ID=your-project,\
+  ELASTICSEARCH_NODE=your-cluster,\
+  ELASTICSEARCH_API_KEY=your-key
+```
 
-### Payment Processing
-- `POST /api/payment/create-intent` - Create payment intent
-- `POST /api/payment/validate-method` - Validate payment method
-- `GET /api/payment/status/:paymentId` - Get payment status
-- `POST /api/payment/refund` - Process refund
-- `POST /api/payment/webhook` - Handle Stripe webhooks
-- `GET /api/payment/stats` - Get payment statistics
-- `GET /api/payment/health` - Check payment service health
+### CI/CD
 
-### Documentation
-See [GEN_AI_FEATURES.md](./GEN_AI_FEATURES.md) for comprehensive Gen AI documentation.
+Use Cloud Build for automated deployments:
 
-## 🏗 Development Progress
-
-This project is being built incrementally following a spec-driven approach:
-
-- ✅ **Task 1**: Project structure and core interfaces
-- ✅ **Task 2**: Mock flight data and Elasticsearch integration
-- ✅ **Task 3**: Natural language processing with Vertex AI
-- ✅ **Task 4**: Flight search service with Elastic hybrid search
-- ✅ **Task 5**: Conversational interface for flight recommendations
-- ✅ **Task 6**: Booking flow and passenger information collection
-- ✅ **Task 7**: Payment processing and booking completion
-- ⏳ **Task 8**: React frontend
-- ⏳ **Task 9**: Booking management
-- ⏳ **Task 10**: Error handling and testing
-- ⏳ **Task 11**: GCP deployment
+```bash
+gcloud builds submit --config cloudbuild.yaml
+```
 
 ## 📖 Documentation
 
-### Gen AI Showcase
-- **[QUICK_START_SHOWCASE.md](./QUICK_START_SHOWCASE.md)** - Quick start guide for the Gen AI Showcase
-- **[GENAI_SHOWCASE_COMPLETE.md](./GENAI_SHOWCASE_COMPLETE.md)** - Complete implementation details
-- **[SHOWCASE_VS_BOOKING.md](./SHOWCASE_VS_BOOKING.md)** - Comparison between interfaces
+### Key Documents
+- **TESTING_GUIDE.md** - Comprehensive testing instructions
+- **DEPLOYMENT_CHECKLIST.md** - Production deployment guide
+- **GEN_AI_ARCHITECTURE.md** - Gen AI system architecture
+- **GEN_AI_FEATURES.md** - Detailed feature documentation
+- **ARCHITECTURE_DIAGRAM.md** - System architecture diagrams
 
-### General Documentation
-- **[GEN_AI_FEATURES.md](./GEN_AI_FEATURES.md)** - Comprehensive Gen AI documentation
-- **[TESTING_GUIDE.md](./TESTING_GUIDE.md)** - Testing instructions
-- **[DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)** - Deployment guide
+### API Documentation
+All API endpoints are documented with:
+- Request/response schemas
+- Example payloads
+- Error codes
+- Authentication requirements
 
-## 📄 License
+## 🎯 Use Cases
 
-MIT License - see LICENSE file for details.
+### 1. Natural Language Flight Search
+User: "I need a cheap flight to Paris next week"
+→ AI understands intent, searches flights, provides recommendations
+
+### 2. AI Agent Booking
+AI Agent: Creates AP2 Mandate → Books flight → Processes payment
+→ All with cryptographic proof of user authorization
+
+### 3. Price Monitoring
+User: "Should I book now or wait?"
+→ ML model predicts price trends, provides recommendation
+
+### 4. Travel Q&A
+User: "What's the baggage allowance?"
+→ RAG system retrieves policy, generates accurate answer
 
 ## 🤝 Contributing
 
-This is a hackathon project showcasing the integration of Elastic and Google Cloud technologies.
+This is a hackathon project showcasing Gen AI and AP2 integration. Contributions welcome!
+
+### Development Workflow
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## 📝 License
+
+MIT License - see LICENSE file for details
+
+## 🙏 Acknowledgments
+
+- **Google Cloud** - Vertex AI, Cloud Run, Firestore
+- **Elastic** - Elasticsearch and vector search
+- **Stripe** - Payment processing
+- **Google AP2** - Agent Payment Protocol standard
+- **60+ AP2 Partners** - For the open payment standard
+
+## 📞 Support
+
+### Issues
+- Check existing documentation
+- Review error logs in Cloud Run
+- Test with `/health` endpoint
+
+### Resources
+- [Vertex AI Documentation](https://cloud.google.com/vertex-ai/docs)
+- [Elasticsearch Guide](https://www.elastic.co/guide)
+- [Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [AP2 Protocol](https://agentprotocol.org)
+
+## 🚀 Live Application
+
+**Production URL:** https://flight-booking-assistant-640958026619.us-central1.run.app
+
+### Features Available
+- ✅ Smart Flight Search
+- ✅ Price Forecast
+- ✅ Ask Questions (Travel Q&A)
+- ✅ AI Recommendations
+- ✅ Complete Booking Flow
+- ✅ Google AP2 Payments
+
+---
+
+**Built with ❤️ using Google Cloud, Vertex AI, and Elasticsearch**
+
+**Powered by Google's Agent Payment Protocol (AP2)**
