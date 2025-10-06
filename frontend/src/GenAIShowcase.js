@@ -8,6 +8,9 @@ function GenAIShowcase() {
   const [ragQuestion, setRagQuestion] = useState('');
   const [ragAnswer, setRagAnswer] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [selectedRoute, setSelectedRoute] = useState('JFK-LAX');
+  const [selectedDate, setSelectedDate] = useState(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]);
+  const [currentPrice, setCurrentPrice] = useState('450');
 
   const handleSemanticSearch = async () => {
     setLoading(true);
@@ -28,14 +31,15 @@ function GenAIShowcase() {
   const handlePricePrediction = async () => {
     setLoading(true);
     try {
+      const [origin, destination] = selectedRoute.split('-');
       const response = await fetch('/api/genai/predict-price', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          origin: 'JFK',
-          destination: 'LAX',
-          departureDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-          currentPrice: 450
+          origin,
+          destination,
+          departureDate: new Date(selectedDate).toISOString(),
+          currentPrice: parseInt(currentPrice) || 450
         })
       });
       const data = await response.json();
@@ -136,22 +140,31 @@ function GenAIShowcase() {
                 {semanticResults.success ? (
                   <>
                     <h3 style={{ marginBottom: '15px' }}>Found {semanticResults.data?.results?.length || 0} flights</h3>
-                    {semanticResults.data?.results?.map((flight, idx) => (
-                      <div key={idx} style={{ backgroundColor: '#1e293b', padding: '15px', borderRadius: '8px', marginBottom: '10px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <div>
-                            <strong>{flight.airline} {flight.flightNumber}</strong>
-                            <div style={{ color: '#94a3b8', fontSize: '14px' }}>
-                              {flight.origin} → {flight.destination}
+                    {semanticResults.data?.results?.map((result, idx) => {
+                      const flight = result.flight || result;
+                      const origin = flight.origin?.city || flight.origin?.code || flight.origin || 'N/A';
+                      const destination = flight.destination?.city || flight.destination?.code || flight.destination || 'N/A';
+                      return (
+                        <div key={idx} style={{ backgroundColor: '#1e293b', padding: '15px', borderRadius: '8px', marginBottom: '10px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div>
+                              <strong>{flight.airline} {flight.flightNumber}</strong>
+                              <div style={{ color: '#94a3b8', fontSize: '14px' }}>
+                                {origin} → {destination}
+                              </div>
+                              <div style={{ color: '#64748b', fontSize: '12px', marginTop: '5px' }}>
+                                {new Date(flight.departureTime).toLocaleDateString()} • {flight.duration} min • {flight.stops === 0 ? 'Direct' : `${flight.stops} stop(s)`}
+                              </div>
+                            </div>
+                            <div style={{ textAlign: 'right' }}>
+                              <div style={{ fontSize: '20px', fontWeight: '700', color: '#10b981' }}>${flight.price}</div>
+                              <div style={{ fontSize: '12px', color: '#94a3b8' }}>Score: {(result.score * 100).toFixed(1)}%</div>
+                              <div style={{ fontSize: '11px', color: '#64748b', marginTop: '3px' }}>{flight.availableSeats} seats</div>
                             </div>
                           </div>
-                          <div>
-                            <div style={{ fontSize: '20px', fontWeight: '700', color: '#10b981' }}>${flight.price}</div>
-                            <div style={{ fontSize: '12px', color: '#94a3b8' }}>Score: {(flight.score * 100).toFixed(1)}%</div>
-                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </>
                 ) : (
                   <div style={{ color: '#ef4444' }}>Error: {semanticResults.error}</div>
@@ -168,9 +181,39 @@ function GenAIShowcase() {
               See if prices are likely to go up or down. We analyze trends to help you decide when to book.
             </p>
             <div style={{ backgroundColor: '#0f172a', padding: '20px', borderRadius: '8px', marginBottom: '20px' }}>
-              <div style={{ marginBottom: '10px' }}><strong>Route:</strong> JFK → LAX</div>
-              <div style={{ marginBottom: '10px' }}><strong>Date:</strong> 30 days from now</div>
-              <div><strong>Current Price:</strong> $450</div>
+              <div style={{ marginBottom: '15px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', color: '#94a3b8' }}>Route</label>
+                <select 
+                  style={{ ...styles.input, marginBottom: 0 }} 
+                  value={selectedRoute}
+                  onChange={(e) => setSelectedRoute(e.target.value)}
+                >
+                  <option value="JFK-LAX">New York (JFK) → Los Angeles (LAX)</option>
+                  <option value="JFK-CDG">New York (JFK) → Paris (CDG)</option>
+                  <option value="LAX-NRT">Los Angeles (LAX) → Tokyo (NRT)</option>
+                  <option value="SFO-LHR">San Francisco (SFO) → London (LHR)</option>
+                </select>
+              </div>
+              <div style={{ marginBottom: '15px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', color: '#94a3b8' }}>Travel Date</label>
+                <input 
+                  type="date" 
+                  style={{ ...styles.input, marginBottom: 0 }}
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', color: '#94a3b8' }}>Current Price (Optional)</label>
+                <input 
+                  type="number" 
+                  style={{ ...styles.input, marginBottom: 0 }}
+                  placeholder="e.g., 450"
+                  value={currentPrice}
+                  onChange={(e) => setCurrentPrice(e.target.value)}
+                />
+              </div>
             </div>
             <button style={styles.button} onClick={handlePricePrediction} disabled={loading}>
               {loading ? '⏳ Analyzing...' : '📊 Check Price Trends'}
@@ -180,33 +223,38 @@ function GenAIShowcase() {
               <div style={styles.result}>
                 {pricePrediction.success ? (
                   <>
-                    <h3 style={{ marginBottom: '20px' }}>Prediction Results</h3>
+                    <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#0f172a', borderRadius: '8px' }}>
+                      <h3 style={{ marginBottom: '10px' }}>Prediction for {selectedRoute.replace('-', ' → ')}</h3>
+                      <div style={{ color: '#94a3b8', fontSize: '14px' }}>
+                        Travel Date: {new Date(selectedDate).toLocaleDateString()} • Current Price: ${currentPrice || 'N/A'}
+                      </div>
+                    </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px', marginBottom: '20px' }}>
                       <div style={{ backgroundColor: '#1e293b', padding: '15px', borderRadius: '8px', textAlign: 'center' }}>
                         <div style={{ fontSize: '24px', fontWeight: '700', color: '#10b981' }}>
-                          ${pricePrediction.data?.predictedPrice}
+                          ${pricePrediction.data?.predictedPrice || pricePrediction.data?.prediction?.predictedPrice || 'N/A'}
                         </div>
                         <div style={{ color: '#94a3b8', fontSize: '14px' }}>Predicted Price</div>
                       </div>
                       <div style={{ backgroundColor: '#1e293b', padding: '15px', borderRadius: '8px', textAlign: 'center' }}>
                         <div style={{ fontSize: '24px', fontWeight: '700', color: '#f59e0b' }}>
-                          {pricePrediction.data?.confidence}%
+                          {pricePrediction.data?.confidence || pricePrediction.data?.prediction?.confidence || 'N/A'}%
                         </div>
                         <div style={{ color: '#94a3b8', fontSize: '14px' }}>Confidence</div>
                       </div>
                       <div style={{ backgroundColor: '#1e293b', padding: '15px', borderRadius: '8px', textAlign: 'center' }}>
-                        <div style={{ fontSize: '24px', fontWeight: '700', color: pricePrediction.data?.trend === 'up' ? '#ef4444' : '#10b981' }}>
-                          {pricePrediction.data?.trend === 'up' ? '↑' : '↓'}
+                        <div style={{ fontSize: '24px', fontWeight: '700', color: (pricePrediction.data?.trend || pricePrediction.data?.prediction?.trend) === 'up' ? '#ef4444' : '#10b981' }}>
+                          {(pricePrediction.data?.trend || pricePrediction.data?.prediction?.trend) === 'up' ? '↑ Rising' : '↓ Falling'}
                         </div>
                         <div style={{ color: '#94a3b8', fontSize: '14px' }}>Trend</div>
                       </div>
                     </div>
                     <div style={{ backgroundColor: '#1e293b', padding: '15px', borderRadius: '8px' }}>
-                      <strong>💡 Recommendation:</strong> {pricePrediction.data?.recommendation}
+                      <strong>💡 Recommendation:</strong> {pricePrediction.data?.recommendation || pricePrediction.data?.prediction?.recommendation || 'Check back later for updated predictions'}
                     </div>
                   </>
                 ) : (
-                  <div style={{ color: '#ef4444' }}>Error: {pricePrediction.error}</div>
+                  <div style={{ color: '#ef4444' }}>Error: {pricePrediction.error || 'Failed to get prediction'}</div>
                 )}
               </div>
             )}
