@@ -84,6 +84,10 @@ app.use('/api/travel-updates', travelUpdateRoutes);
 app.use('/api/monitoring', monitoringRoutes);
 app.use('/api/genai', genaiRoutes);
 
+// AP2 Payment Protocol routes
+import ap2Routes from './routes/ap2';
+app.use('/api/ap2', ap2Routes);
+
 // Catch-all for unimplemented API routes
 app.use('/api/*', (req: express.Request, res: express.Response) => {
   res.status(404).json({
